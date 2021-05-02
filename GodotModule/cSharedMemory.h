@@ -2,12 +2,10 @@
 #ifndef SUMMATOR_H
 #define SUMMATOR_H
 
-#include "core/reference.h"
-#include "core/pool_vector.h"
+#include "core/object/reference.h"
 #include "core/io/resource_loader.h"
-#include "core/variant_parser.h"
-#include "core/project_settings.h"
-
+#include "core/variant/variant.h"
+#include "core/config/project_settings.h"
 
 #include <string>
 #include <vector>
@@ -49,10 +47,10 @@ public:
     cSharedMemory();
     ~cSharedMemory();
 
-    PoolVector<int> getIntArray(const String &name);
-    PoolVector<float> getFloatArray(const String &name);
-    void sendIntArray(const String &name, const PoolVector<int> &array);
-    void sendFloatArray(const String &name, const PoolVector<float> &array);
+    Vector<int> getIntArray(const String &name);
+    Vector<float> getFloatArray(const String &name);
+    void sendIntArray(const String &name, const Vector<int> &array);
+    void sendFloatArray(const String &name, const Vector<float> &array);
     bool exists();
 };
 
@@ -76,7 +74,7 @@ class cSharedMemorySemaphore : public Reference {
         };
         void init(const String &sem_name){
             
-            std::wstring ws = sem_name.c_str();
+            std::u32string ws = sem_name.get_data();
 	        std::string s_name( ws.begin(), ws.end() );
             name = new std::string(s_name);
             // std::cout<<"Constructing semaphore "<<*name<<std::endl;
@@ -108,7 +106,7 @@ class cTorchModelData : public Resource{
     GDCLASS(cTorchModelData, Resource);
 
     private:
-        PoolByteArray content;
+        PackedByteArray content;
         
     protected:
         static void _bind_methods(){
@@ -119,7 +117,7 @@ class cTorchModelData : public Resource{
 
     public:
         void load(const char *_data, size_t size){
-            print_line("Converting string to PoolByteArray");
+            print_line("Converting string to PackedByteArray");
             //Convert model to poolbytearray
             content.resize(size);
             for(long i=0; i<size; i++)
@@ -129,15 +127,15 @@ class cTorchModelData : public Resource{
             return content.size();
         }
         void save(char *_data) const{
-            print_line("Converting PoolByteArray to string");
+            print_line("Converting PackedByteArray to string");
             for(int i=0; i<content.size(); i++)
                 _data[i] = content[i];
         }
 
-        void set_array(const PoolByteArray &p_array){
+        void set_array(const PackedByteArray &p_array){
             content = p_array;
         };
-        PoolByteArray get_array() const{
+        PackedByteArray get_array() const{
             return content;
         };
 
@@ -215,8 +213,8 @@ class cTorchModel : public Reference {
             this->module = torch::jit::load(strstream);
         }
 
-        PoolVector<float> run(const PoolVector<float> &input){
-            PoolVector<float> output;
+        Vector<float> run(const Vector<float> &input){
+            Vector<float> output;
             at::Tensor input_t = torch::zeros({1, input.size()}, torch::TensorOptions().dtype(torch::kFloat32));
             for(int i=0; i<input.size(); i++) input_t.index_put_({0,i}, input[i]);
             std::vector<torch::jit::IValue> inputs;

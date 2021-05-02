@@ -7,7 +7,7 @@ from zipfile import ZipFile
 from pathlib import Path
 
 GODOT_PATH = "/home/greg/workspace/repos/godot-git/godot"
-OPTIONS = dict(platform='x11', tools='yes', target='release_debug', bits=64, module_mono_enabled='yes', use_llvm='yes', use_lld='yes')
+OPTIONS = dict(platform='linuxbsd', tools='yes', target='release_debug', bits=64, module_mono_enabled='yes', use_llvm='yes', use_lld='yes')
 
 def download_unpack(rewrite=False):
         # url = 'https://download.pytorch.org/libtorch/cu102/libtorch-cxx11-abi-shared-with-deps-1.7.0.zip'
@@ -32,7 +32,7 @@ def compile_godot(godot_root, **kwargs):
         arguments = " ".join([f"{k}={i}" for k, i in OPTIONS.items()])
         command = f"scons -j$(nproc) {arguments}"
         print(command)
-        os.system(command)
+        assert not os.system(command), "Failed to compile!"
         os.chdir(current_path)
 
 def install_module(godot_root, rewrite=False):

@@ -33,8 +33,8 @@ env_sum.Append(CPPPATH=torch_include)
 env_sum.Append(LIBPATH=torch_libdirs)
 env_sum.Append(RPATH=torch_rlibdirs)
 env_sum.Append(LIBS=torch_libnames_cpu)
-env_sum.Append(CPPDEFINES={'-D_GLIBCXX_USE_CXX14_ABI' : 0 })
-env_sum.Append(CXXFLAGS=['-O2', '-Wall', '-std=gnu++14', '-fPIC'])
+env_sum.Append(CPPDEFINES={'-D_GLIBCXX_USE_CXX17_ABI' : 0 })
+env_sum.Append(CXXFLAGS=['-O2', '-Wall', '-std=gnu++17', '-fPIC'])
 
 src_list = ["cSharedMemory.cpp", "register_types.cpp"]
 env_sum.add_source_files(env.modules_sources, src_list)

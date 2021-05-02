@@ -1,7 +1,7 @@
 /* register_types.cpp */
 
 #include "register_types.h"
-#include "core/class_db.h"
+#include "core/object/class_db.h"
 #include "cSharedMemory.h"
 
 static Ref<cTorchModelLoader> model_loader;
